@@ -7,16 +7,154 @@
     <div class="row">
         {% for novel in novels %}
         <div class="col-md-4 mb-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">{{ novel.title }}</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">By {{ novel.author.username }} on {{ novel.date_posted.strftime('%Y-%m-%d') }}</h6>
-                    <p class="card-text">{{ novel.content[:150]|striptags }}{% if novel.content|length > 150 %}...{% endif %}</p>
-                    <a href="{{ url_for('novel', novel_id=novel.id) }}" class="btn btn-primary">Read More</a>
+            <a href="{{ url_for('novel', novel_id=novel.id) }}" class="publication-link">
+                <div class="card h-100 publication-card">
+                    <div class="card-img-container">
+                        <img src="{{ url_for('static', filename='uploads/' + novel.icon) }}" class="card-img" alt="Publication icon">
+                    </div>
+                    <div class="card-content">
+                        <div class="card-body d-flex flex-column align-items-center">
+                            <h5 class="card-title text-center">{{ novel.title }}</h5>
+                            <h6 class="card-subtitle mb-3 text-center">By {{ novel.author.username }}</h6>
+                            
+                            {% if novel.genres %}
+                            <div class="genre-badges text-center mb-2">
+                                {% for genre in novel.genres[:3] %}
+                                <span class="badge bg-dark me-1">{{ genre.name }}</span>
+                                {% endfor %}
+                                {% if novel.genres|length > 3 %}
+                                <span class="badge bg-light text-dark">+{{ novel.genres|length - 3 }}</span>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Hover overlay with synopsis -->
+                    <div class="card-overlay">
+                        <div class="overlay-content">
+                            <h5 class="text-white">{{ novel.title }}</h5>
+                            <p class="text-white">
+                                {% if novel.synopsis %}
+                                    {{ novel.synopsis[:150] }}{% if novel.synopsis|length > 150 %}...{% endif %}
+                                {% else %}
+                                    No synopsis available.
+                                {% endif %}
+                            </p>
+                            
+                            {% if novel.genres %}
+                            <div class="genre-badges mt-2">
+                                {% for genre in novel.genres %}
+                                <span class="badge bg-light text-dark me-1">{{ genre.name }}</span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
         {% endfor %}
     </div>
 </div>
+
+<style>
+    .publication-link {
+        display: block;
+        text-decoration: none;
+        color: inherit;
+    }
+    
+    .publication-link:hover {
+        text-decoration: none;
+        color: inherit;
+    }
+    
+    .publication-card {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: none;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .card-img-container {
+        position: relative;
+        width: 100%;
+        padding-top: 100%; /* 1:1 Aspect Ratio */
+        overflow: hidden;
+    }
+    
+    .card-img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .card-content {
+        background-color: rgba(255, 255, 255, 0.85);
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 1;
+    }
+    
+    .publication-card .card-title {
+        color: #333;
+        font-weight: bold;
+        margin-bottom: 0.25rem;
+    }
+    
+    .publication-card .card-subtitle {
+        color: #555;
+        font-size: 0.9rem;
+    }
+    
+    .card-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 1rem;
+        z-index: 2;
+    }
+    
+    .overlay-content {
+        padding: 1rem;
+    }
+    
+    .publication-card:hover .card-overlay {
+        opacity: 1;
+    }
+    
+    .publication-link:hover .publication-card {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .genre-badges {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .badge {
+        margin-bottom: 0.25rem;
+    }
+</style>
 {% endblock %} 

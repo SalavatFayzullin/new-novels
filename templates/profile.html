@@ -13,11 +13,18 @@
                 <div class="list-group">
                     {% for novel in novels %}
                     <a href="{{ url_for('novel', novel_id=novel.id) }}" class="list-group-item list-group-item-action">
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">{{ novel.title }}</h5>
-                            <small>{{ novel.date_posted.strftime('%Y-%m-%d') }}</small>
+                        <div class="d-flex w-100">
+                            <div class="me-3">
+                                <img src="{{ url_for('static', filename='uploads/' + novel.icon) }}" alt="Publication icon" class="img-thumbnail" style="width: 40px; height: 40px; object-fit: cover;">
+                            </div>
+                            <div class="flex-grow-1">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1">{{ novel.title }}</h5>
+                                    <small>{{ novel.date_posted.strftime('%Y-%m-%d') }}</small>
+                                </div>
+                                <p class="mb-1">{{ novel.content[:150]|striptags }}{% if novel.content|length > 150 %}...{% endif %}</p>
+                            </div>
                         </div>
-                        <p class="mb-1">{{ novel.content[:150]|striptags }}{% if novel.content|length > 150 %}...{% endif %}</p>
                     </a>
                     {% endfor %}
                 </div>
