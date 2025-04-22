@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Write a Novel</h1>
+    
+    <form method="POST" action="{{ url_for('write_novel') }}" id="novel-form">
+        <div class="form-group mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" class="form-control" id="title" name="title" required>
+        </div>
+        
+        <div class="form-group mb-3">
+            <label for="content" class="form-label">Content (Markdown supported)</label>
+            <textarea class="form-control" id="content" name="content" rows="15"></textarea>
+            <div class="invalid-feedback" id="content-feedback">Content is required</div>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Publish Novel</button>
+    </form>
+</div>
+
+<!-- Add EasyMDE Markdown Editor -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+<script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let easyMDE = new EasyMDE({
+            element: document.getElementById('content'),
+            spellChecker: true,
+            autosave: {
+                enabled: true,
+                uniqueId: 'novel-content',
+                delay: 1000,
+            },
+            toolbar: [
+                'bold', 'italic', 'heading', '|',
+                'quote', 'unordered-list', 'ordered-list', '|',
+                'link', 'image', '|',
+                'preview', 'side-by-side', 'fullscreen', '|',
+                'guide'
+            ],
+            placeholder: 'Write your novel here using Markdown...',
+            status: ['autosave', 'lines', 'words', 'cursor']
+        });
+        
+        // Fix form submission with custom validation
+        document.getElementById('novel-form').addEventListener('submit', function(e) {
+            // Get the content from EasyMDE
+            const content = easyMDE.value();
+            
+            // Check if content is empty
+            if (!content.trim()) {
+                e.preventDefault(); // Stop form submission
+                
+                // Show validation error
+                document.getElementById('content-feedback').style.display = 'block';
+                alert('Please write some content for your novel.');
+                return false;
+            }
+            
+            // Update the original textarea with the EasyMDE content
+            document.getElementById('content').value = content;
+            return true;
+        });
+    });
+</script>
+{% endblock %} 

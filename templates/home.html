@@ -1,9 +1,22 @@
 {% extends "layout.html" %}
+
 {% block content %}
-<div class="jumbotron">
-    <h1 class="display-4">Welcome, {{ current_user.username }}!</h1>
-    <p class="lead">You have successfully logged in to the Flask Authentication app.</p>
-    <hr class="my-4">
-    <p>This is the protected main page that requires authentication to access.</p>
+<div class="container">
+    <h1 class="mb-4">Welcome to Novels Hub</h1>
+    
+    <div class="row">
+        {% for novel in novels %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ novel.title }}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">By {{ novel.author.username }} on {{ novel.date_posted.strftime('%Y-%m-%d') }}</h6>
+                    <p class="card-text">{{ novel.content[:150]|striptags }}{% if novel.content|length > 150 %}...{% endif %}</p>
+                    <a href="{{ url_for('novel', novel_id=novel.id) }}" class="btn btn-primary">Read More</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %} 

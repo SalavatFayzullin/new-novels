@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="card mb-4">
+        <div class="card-header">
+            <h1 class="mb-0">{{ novel.title }}</h1>
+        </div>
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <span class="text-muted">By <a href="{{ url_for('profile') if novel.author == current_user else '#' }}">{{ novel.author.username }}</a></span>
+                <span class="text-muted">Published on {{ novel.date_posted.strftime('%Y-%m-%d') }}</span>
+            </div>
+            
+            <div class="novel-content markdown-body">
+                <div id="markdown-content" style="display: none;">{{ novel.content }}</div>
+            </div>
+        </div>
+    </div>
+    
+    <a href="{{ url_for('home') }}" class="btn btn-secondary">Back to Home</a>
+</div>
+
+<!-- Add Markdown-it for rendering -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css/github-markdown.min.css">
+<script src="https://cdn.jsdelivr.net/npm/markdown-it/dist/markdown-it.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const md = window.markdownit({
+            html: true,
+            linkify: true,
+            typographer: true
+        });
+        
+        const content = document.getElementById('markdown-content').textContent;
+        const renderedHtml = md.render(content);
+        
+        document.querySelector('.markdown-body').innerHTML = renderedHtml;
+    });
+</script>
+{% endblock %} 

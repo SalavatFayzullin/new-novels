@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">{{ current_user.username }}'s Profile</h1>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3>Your Publications</h3>
+        </div>
+        <div class="card-body">
+            {% if novels %}
+                <div class="list-group">
+                    {% for novel in novels %}
+                    <a href="{{ url_for('novel', novel_id=novel.id) }}" class="list-group-item list-group-item-action">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1">{{ novel.title }}</h5>
+                            <small>{{ novel.date_posted.strftime('%Y-%m-%d') }}</small>
+                        </div>
+                        <p class="mb-1">{{ novel.content[:150]|striptags }}{% if novel.content|length > 150 %}...{% endif %}</p>
+                    </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="lead text-center">You haven't published any novels yet. <a href="{{ url_for('write_novel') }}">Write one now!</a></p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <a href="{{ url_for('write_novel') }}" class="btn btn-primary">Write a New Novel</a>
+</div>
+{% endblock %} 
