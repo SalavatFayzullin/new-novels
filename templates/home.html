@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="jumbotron">
+    <h1 class="display-4">Welcome, {{ current_user.username }}!</h1>
+    <p class="lead">You have successfully logged in to the Flask Authentication app.</p>
+    <hr class="my-4">
+    <p>This is the protected main page that requires authentication to access.</p>
+</div>
+{% endblock %} 
